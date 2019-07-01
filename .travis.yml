@@ -6,7 +6,7 @@ before_install:
   - docker build -t jakeeqsbl/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run jakeeqsbl/react-test npm ci_test -- --coverage 
+  - docker run jakeeqsbl/react-test npm run ci_test -- --coverage 
 
 after_success:
   - docker build -t jakeeqsbl/multi-client ./client
