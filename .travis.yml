@@ -1,0 +1,24 @@
+sudo: required
+services:
+  - docker 
+
+before_install:
+  - docker build -t jakeeqsbl/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run jakeeqsbl/react-test npm ci_test -- --coverage 
+
+after_success:
+  - docker build -t jakeeqsbl/multi-client ./client
+  - docker build -t jakeeqsbl/multi-nginx ./nginx
+  - docker build -t jakeeqsbl/multi-server ./server
+  - docker build -t jakeeqsbl/multi-worker ./worker
+
+  # login
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  # push the images 
+  - docker push jakeeqsbl/multi-client
+  - docker push jakeeqsbl/multi-nginx
+  - docker push jakeeqsbl/multi-server
+  - docker push jakeeqsbl/multi-worker
